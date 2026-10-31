@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle">Maximum Fire - Auswertung</title>
+
+<link rel="stylesheet" href="stylebackuo.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        <h1>Maximum Fire</h1>
+        <p class="slogan">TRAIN SMART AND HARD</p>
+    </div>
+</header>
+
+<main>
+    <a href="statistiken.html" class="back-button">← Zurück zu Statistiken</a>
+
+    <section class="card">
+        
+        <div id="viewGesundheit" style="display: none;">
+            <!-- Überschrift & Button direkt nebeneinander -->
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;"> 
+                <h2 style="margin: 0;">❤️ Gesundheit</h2>
+
+                <button onclick="openAddModal()" style="background: #111; color: white; border: none; padding: 8px 12px; border-radius: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                    <span style="font-size: 18px;">+</span> Messung
+                </button>
+            </div>
+                
+
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; margin-top: 15px;">
+                <div class="chart-buttons" style="display: flex; gap: 8px; flex: 1; min-width: 200px;">
+                    <button id="btnRuhepuls" class="chart-btn active" onclick="selectHealthMetric('ruhepuls')" style="flex: 1; padding: 12px 5px; font-weight: bold;">Ruhepuls</button>
+                    <button id="btnGewicht" class="chart-btn" onclick="selectHealthMetric('gewicht')" style="flex: 1; padding: 12px 5px; font-weight: bold;">Gewicht</button>
+                    <button id="btnHRV" class="chart-btn" onclick="selectHealthMetric('hrv')" style="flex: 1; padding: 12px 5px; font-weight: bold;">HRV</button>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <label for="healthTimeframe" style="font-weight: bold; font-size: 14px;">Zeitraum:</label>
+                        <select id="healthTimeframe" onchange="changeHealthTimeframe()" style="padding: 10px 14px; border-radius: 10px; border: 1px solid #ccc; background: #fff; font-weight: bold; font-size: 14px; cursor: pointer;">
+                            <option value="7d">7 Tage</option>
+                            <option value="1m">1 Monat</option>
+                            <option value="1y">1 Jahr</option>
+                            <option value="10y">10 Jahre</option>
+                            <option value="all">Gesamt</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: center; gap: 15px; background: #fdfdfd; padding: 10px; border-radius: 12px; border: 1px solid #eee;">
+                    <button onclick="shiftHealthOffset(-1)" style="border: none; background: #ff7a00; color: white; border-radius: 50%; width: 35px; height: 35px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;">◀</button>
+                    
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 170px;">
+                        <span id="healthDateText" style="font-weight: bold; font-size: 15px; text-align: center; color: #111;"></span>
+                        <span id="healthDateSubText" style="font-size: 12px; color: #888; font-weight: normal; margin-top: 2px; text-align: center;"></span>
+                    </div>
+
+                    <button id="healthNextBtn" onclick="shiftHealthOffset(1)" style="border: none; background: #ccc; color: white; border-radius: 50%; width: 35px; height: 35px; font-size: 18px; cursor: not-allowed; display: flex; align-items: center; justify-content: center;" disabled>▶</button>
+                </div>
+            </div>
+
+            <div class="chart-wrapper" style="position: relative; height: 300px; width: 100%;">
+                <canvas id="gesundheitChart"></canvas>
+            </div>
+        </div>
+
+
+        <div id="viewZonen" style="display: none;">
+            <h2>📈 Leistungszonen</h2>
+            <p style="color: #777; margin-top: 5px; margin-bottom: 20px; font-size: 14px;">Deine festgelegten Trainingsbereiche. Klicke auf einen Wert, um ihn anzupassen.</p>
+
+            <div class="chart-buttons" style="display: flex; gap: 8px; margin-bottom: 25px;">
+                <button id="btnLeistung" class="chart-btn active" onclick="selectZoneMetric('leistung')" style="flex: 1; padding: 12px; font-weight: bold;">⚡ Leistung (Watt)</button>
+                <button id="btnHf" class="chart-btn" onclick="selectZoneMetric('hf')" style="flex: 1; padding: 12px; font-weight: bold;">❤️ Hf (Puls)</button>
+            </div>
+
+            <div id="zonesContainer" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        </div>
+
+    </section>
+</main>
+
+<nav>
+    <button onclick="window.location.href='index.html'">🏠<br>Start</button>
+    <button onclick="window.location.href='kalenderbackup.html'">📅<br>Kalender</button>
+    <button class="active" onclick="window.location.href='statistiken.html'">📊<br>Statistik</button>
+    <button onclick="window.location.href='profil.html'">👤<br>Profil</button>
+</nav>
+
+<div id="addModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(3px);">
+    <div style="background: white; padding: 25px; border-radius: 18px; width: 90%; max-width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+        <h3 id="modalTitle" style="margin-bottom: 5px;">Neue Messung</h3>
+        <p style="color: #777; font-size: 14px; margin-bottom: 20px;">Füge einen aktuellen Wert hinzu.</p>
+        
+        <div style="display: flex; align-items: center; gap: 10px; background: #f3f5f7; padding: 10px 15px; border-radius: 12px; border: 1px solid #ddd;">
+            <input type="number" id="measurementInput" placeholder="Wert eingeben..." style="flex: 1; border: none; background: transparent; font-size: 18px; font-weight: bold; outline: none; width: 100%;">
+            <strong id="modalUnit" style="font-size: 18px; color: #ff7a00;">bpm</strong>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 25px;">
+            <button onclick="closeAddModal()" style="flex: 1; padding: 14px; background: #eee; color: #333; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Abbrechen</button>
+            <button onclick="saveMeasurement()" style="flex: 1; padding: 14px; background: #ff7a00; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Speichern</button>
+        </div>
+    </div>
+</div>
+
+<div id="zoneEditModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(3px);">
+    <div style="background: white; padding: 25px; border-radius: 18px; width: 90%; max-width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+        <h3 id="zoneEditTitle" style="margin-bottom: 5px;">Zone bearbeiten</h3>
+        <p style="color: #777; font-size: 14px; margin-bottom: 20px;">Trage den neuen Wertebereich ein.</p>
+        
+        <div style="display: flex; align-items: center; gap: 10px; background: #f3f5f7; padding: 10px 15px; border-radius: 12px; border: 1px solid #ddd;">
+            <input type="text" id="zoneRangeInput" placeholder="z. B. 160 - 215 W" style="flex: 1; border: none; background: transparent; font-size: 16px; font-weight: bold; outline: none; width: 100%;">
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 25px;">
+            <button onclick="closeZoneEditModal()" style="flex: 1; padding: 14px; background: #eee; color: #333; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Abbrechen</button>
+            <button onclick="saveZoneRange()" style="flex: 1; padding: 14px; background: #ff7a00; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Speichern</button>
+        </div>
+    </div>
+</div>
+
+<script src="stat-gesundheit-zonen.js"></script>
+
+</body>
+</html>

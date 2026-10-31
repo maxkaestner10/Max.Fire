@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Maximum Fire - Leistungsdiagnostik</title>
+
+    <link rel="stylesheet" href="stylebackuo.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        <h1>Maximum Fire</h1>
+        <p class="slogan">TRAIN SMART AND HARD</p>
+    </div>
+</header>
+
+<main>
+    <a href="statistiken.html" class="back-button">← Zurück zu Statistiken</a>
+
+    <section class="card">
+        
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;"> 
+            <h2 style="margin: 0;">🧪 Leistungsdiagnostik</h2>
+        </div>
+
+        <p style="color: #777; font-size: 14px; margin-top: -5px; margin-bottom: 20px;">
+            Wähle ein Testverfahren aus, um ein neues Protokoll einzutragen oder bestehende Werte auszuwerten.
+        </p>
+
+        <!-- Test-Auswahlbereich -->
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;">
+            
+            <!-- CP 20 Min Test -->
+            <div id="card-cp20" onclick="selectTestType('cp20')" style="background: #fdfdfd; padding: 18px; border-radius: 14px; border: 2px solid #eee; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <strong style="font-size: 16px; color: #111; display: block; margin-bottom: 4px;">🚴‍♂️ CP 20 min Test</strong>
+                    <span style="font-size: 13px; color: #666;">Standard 20-Minuten FTP / Critical Power Bestimmung</span>
+                </div>
+                <span style="font-size: 20px; color: #ff7a00; font-weight: bold;">➔</span>
+            </div>
+
+            <!-- 3 Min Stufentest -->
+            <div id="card-stufe3" onclick="selectTestType('stufe3')" style="background: #fdfdfd; padding: 18px; border-radius: 14px; border: 2px solid #eee; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <strong style="font-size: 16px; color: #111; display: block; margin-bottom: 4px;">📈 3 min Stufentest</strong>
+                    <span style="font-size: 13px; color: #666;">Stufenprotokoll mit 3-Minuten-Intervallen</span>
+                </div>
+                <span style="font-size: 20px; color: #ff7a00; font-weight: bold;">➔</span>
+            </div>
+
+            <!-- 5 Min Stufentest -->
+            <div id="card-stufe5" onclick="selectTestType('stufe5')" style="background: #fdfdfd; padding: 18px; border-radius: 14px; border: 2px solid #eee; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <strong style="font-size: 16px; color: #111; display: block; margin-bottom: 4px;">⏱️ 5 min Stufentest</strong>
+                    <span style="font-size: 13px; color: #666;">Erweitertes Stufenprotokoll (z. B. für Laktatmessung)</span>
+                </div>
+                <span style="font-size: 20px; color: #ff7a00; font-weight: bold;">➔</span>
+            </div>
+
+        </div>
+
+        <!-- Container für die spätere Test-Eingabe & Auswertung -->
+        <div id="testContentArea" style="display: none; border-top: 1px solid #eee; padding-top: 20px;">
+            <h3 id="selectedTestTitle" style="margin-bottom: 10px; color: #111;"></h3>
+            <div id="selectedTestBody">
+                <!-- Hier kommt im nächsten Schritt das Eingabeformular / Diagramm rein -->
+            </div>
+        </div>
+
+    </section>
+</main>
+
+<nav>
+    <button onclick="window.location.href='index.html'">🏠<br>Start</button>
+    <button onclick="window.location.href='kalenderbackup.html'">📅<br>Kalender</button>
+    <button class="active" onclick="window.location.href='statistiken.html'">📊<br>Statistik</button>
+    <button onclick="window.location.href='profil.html'">👤<br>Profil</button>
+</nav>
+
+<script src="stat-diagnostik.js"></script>
+
+</body>
+</html>

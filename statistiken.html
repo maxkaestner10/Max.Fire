@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maximum Fire - Statistiken</title>
+
+<link rel="stylesheet" href="stylebackuo.css">
+
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        <h1>Maximum Fire</h1>
+        <p class="slogan">TRAIN SMART AND HARD</p>
+    </div>
+</header>
+
+<main>
+    <h2>📊 Statistiken & Analysen</h2>
+
+    <section class="card">
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            
+            <div class="stat-box" onclick="window.location.href='stat-pr.html'" style="cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px; width: 100%; text-align: center;">
+                
+                <strong style="font-size: 18px; margin: 0;">PR</strong>
+            </div>
+
+            <div class="stat-box" onclick="window.location.href='stat-aktivitaeten.html'" style="cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px; width: 100%; text-align: center;">
+                
+                <strong style="font-size: 18px; margin: 0;">Aktivitäten</strong>
+            </div>
+
+            <div class="stat-box" onclick="window.location.href='stat-leistungszustand.html'" style="cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px; width: 100%; text-align: center;">
+               
+                <strong style="font-size: 18px; margin: 0;">Leistungszustand</strong>
+            </div>
+
+            <div class="stat-box" onclick="window.location.href='stat-gesundheit-zonen.html?ansicht=gesundheit'" style="cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px; width: 100%; text-align: center;">
+              
+             <strong style="font-size: 18px; margin: 0;">Gesundheit</strong>
+           </div>
+
+            <div class="stat-box" onclick="window.location.href='stat-gesundheit-zonen.html?ansicht=zonen'" style="cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px; width: 100%; text-align: center;">
+               
+               <strong style="font-size: 18px; margin: 0;">Zonen</strong>
+            </div> 
+
+             <div class="stat-box" onclick="window.location.href='stat-diagnostik.html'" style="cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px; width: 100%; text-align: center;">
+               
+               <strong style="font-size: 18px; margin: 0;">Leistungsdiagnostik</strong>
+            </div> 
+
+        </div> 
+    </section>
+</main>
+
+<nav>
+    <button onclick="window.location.href='index.html'">🏠<br>Start</button>
+    <button onclick="window.location.href='kalenderbackup.html'">📅<br>Kalender</button>
+    <button class="active" style="border-top: 3px solid #ff7a00;">📊<br>Statistik</button>
+    <button onclick="window.location.href='profil.html'">👤<br>Profil</button>
+</nav>
+
+</body>
+</html>

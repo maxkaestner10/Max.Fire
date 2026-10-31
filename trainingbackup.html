@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Fire - Tagesansicht</title>
+
+    <link rel="stylesheet" href="stylebackuo.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+    <script src="firebase-config.js"></script>
+    <script src="auth-helper.js"></script>
+    <script src="data-manager.js"></script>
+    
+    <style>
+        .status-btn {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .status-geplant { background-color: #ff7a00; color: #ffffff; }
+        .status-absolviert { background-color: #2e7d32; color: #ffffff; }
+
+        /* Styles für die Tagesübersicht oben */
+        .overview-item-card {
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            background: #ffffff;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .overview-item-card:hover {
+            transform: translateY(-2px);
+        }
+        .overview-item-card.active {
+            border-color: #ff7a00 !important;
+            box-shadow: 0 4px 12px rgba(255, 122, 0, 0.25);
+        }
+
+        /* 2-Zeilen-Text-Vorschau für Notizen */
+        .note-preview-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: pre-line;
+            color: #444;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-top: 6px;
+        }
+
+        .add-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .add-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        <h1>Maximum Fire</h1>
+        <p class="slogan">TRAIN SMART AND HARD</p>
+    </div>
+</header>
+
+<main>
+
+    <a href="kalenderbackup.html" class="back-button">
+        ← Zurück zum Kalender
+    </a>
+
+    <!-- 1. TAGESÜBERSICHT (OBEN) -->
+    <section class="card" id="tagesUebersichtCard">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2 style="margin:0; font-size: 18px;" id="dayOverviewTitle">📅 Tagesübersicht</h2>
+            <span id="dayDateDisplay" style="color:#777; font-size:13px; font-weight: bold;">-</span>
+        </div>
+
+        <!-- Liste der Trainings & Notizen (älteste oben, neuste unten) -->
+        <div id="dayOverviewList">
+            <p style="color: #888; text-align: center;">Einträge werden geladen...</p>
+        </div>
+
+        <!-- Aktionen: Neues Training oder Neue Notiz hinzufügen -->
+        <div class="add-actions">
+            <button class="add-btn" style="background: #ff7a00; color: white;" onclick="goToCreateWorkout()">
+                ➕ Training hinzufügen
+            </button>
+            <button class="add-btn" style="background: #efefef; color: #333;" onclick="toggleAddNoteForm()">
+                📝 Notiz hinzufügen
+            </button>
+        </div>
+
+        <!-- Inlined-Formular für schnelle Neue Notiz -->
+        <div id="newNoteForm" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+            <textarea id="newNoteText" rows="3" placeholder="Schreibe deine Notiz für diesen Tag..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-family: inherit; box-sizing: border-box;"></textarea>
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
+                <button onclick="toggleAddNoteForm()" style="padding: 6px 12px; border-radius: 6px; border: none; background: #ccc; cursor: pointer;">Abbrechen</button>
+                <button onclick="saveNewNote()" style="padding: 6px 16px; border-radius: 6px; border: none; background: #ff7a00; color: white; font-weight: bold; cursor: pointer;">Speichern</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. DETAILANSICHT FÜR NOTIZEN -->
+    <section class="card" id="noteDetailSection" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h2>📝 Notiz Details</h2>
+            <button onclick="deleteCurrentItem()" style="background: none; border: none; color: #d32f2f; cursor: pointer; font-weight: bold;">🗑 Löschen</button>
+        </div>
+        <div class="description-box" id="fullNoteContent" style="white-space: pre-line; font-size: 15px; color: #222; background: #f9f9f9; padding: 15px; border-radius: 8px;"></div>
+    </section>
+
+    <!-- 3. DETAILANSICHT FÜR TRAININGS -->
+    <div id="workoutDetailSection">
+        <section class="card">
+            <div class="training-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 id="trainingTitle">🚵 Training wird geladen...</h2>
+                    <p class="training-date" style="color: #888; font-size: 14px; margin-top: 4px;">
+                        <span id="trainingDate">-</span> • <span id="trainingSport">-</span>
+                    </p>
+                </div>
+                <!-- 🔥 HIER: Der neue Löschen-Button für Trainings -->
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <button id="statusBtn" class="status-btn status-geplant" onclick="toggleStatus()">GEPLANT</button>
+                    <button onclick="deleteCurrentItem()" style="background: none; border: none; color: #d32f2f; cursor: pointer; font-size: 20px; padding: 0 5px;" title="Training löschen">🗑</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="card stats-section" id="allgemeinCard">
+            <h2>📊 Allgemein</h2>
+            <div class="stats-grid">
+                <div class="stat-box"><span>Distanz</span><strong id="valDistanz">-</strong></div>
+                <div class="stat-box"><span>Dauer</span><strong id="valDauer">-</strong></div>
+                <div class="stat-box"><span>Bewegungszeit</span><strong id="valBewegung">-</strong></div>
+                <div class="stat-box"><span>Kalorien</span><strong id="valKalorien">-</strong></div>
+                <div class="stat-box"><span>Ø Leistung</span><strong id="valLeistung">-</strong></div>
+                <div class="stat-box"><span>Ø Puls</span><strong id="valPuls">-</strong></div>
+                <div class="stat-box"><span>Ø Geschwindigkeit</span><strong id="valSpeed">-</strong></div>
+                <div class="stat-box"><span>Temperatur</span><strong id="valTemp">-</strong></div>
+            </div>
+        </section>
+
+        <section class="card stats-section" id="belastungCard">
+            <h2>🔥 Belastung</h2>
+            <div class="stats-grid">
+                <div class="stat-box"><span>TSS</span><strong id="valTSS">-</strong></div>
+                <div class="stat-box"><span>IF</span><strong id="valIF">-</strong></div>
+                <div class="stat-box"><span>Trainingslast</span><strong id="valLast">-</strong></div>
+                <div class="stat-box"><span>Erholung</span><strong id="valErholung">-</strong></div>
+            </div>
+        </section>
+
+        <section class="card" id="beschreibungCard">
+            <h2>📝 Trainingsbeschreibung</h2>
+            <div class="description-box" id="beschreibungText">
+                <p>Keine Beschreibung hinterlegt.</p>
+            </div>
+        </section>
+
+        <section class="card" id="chartCard">
+            <h2>📈 Diagramm</h2>
+
+            <div class="chart-buttons" style="display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap;">
+                <button class="chart-btn active" onclick="changeChart('power')">⚡ Watt</button>
+                <button class="chart-btn" onclick="changeChart('hr')">❤️ Puls</button>
+                <button class="chart-btn" onclick="changeChart('height')">⛰ Höhe</button>
+                <button class="chart-btn" onclick="changeChart('speed')">🚴 Geschwindigkeit</button>
+                <button class="chart-btn" onclick="changeChart('cadence')">🔄 Kadenz</button>
+            </div>
+
+            <div class="chart-wrapper" style="position: relative; height: 260px;">
+                <canvas id="trainingChart"></canvas>
+            </div>
+
+            <div id="intervalBox" style="display: none; margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(0, 0, 0, 0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h3 style="margin: 0; font-size: 16px; color: #111;">🔍 Gewähltes Intervall</h3>
+                    <button onclick="resetIntervalSelection()" style="cursor: pointer; padding: 6px 12px; border-radius: 6px; border: none; background: #ff7a00; color: #fff; font-weight: bold; font-size: 13px;">
+                        Auswahl aufheben
+                    </button>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-box"><span>Intervall Dauer</span><strong id="intervalDuration" style="color: #111;">-</strong></div>
+                    <div class="stat-box"><span>Ø Wert</span><strong id="intervalAvg">-</strong></div>
+                    <div class="stat-box"><span>Max Wert</span><strong id="intervalMax">-</strong></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card stats-section" id="analyseCard">
+            <h2 id="analysisTitle">⚡ Wattanalyse</h2>
+            <div id="analysisGrid"></div>
+        </section>
+    </div>
+
+</main>
+
+<nav>
+    <button onclick="window.location.href='index.html'">🏠<br>Start</button>
+    <button class="active" onclick="window.location.href='kalenderbackup.html'">📅<br>Kalender</button>
+    <button onclick="window.location.href='statistiken.html'">📊<br>Statistik</button>
+    <button onclick="window.location.href='profil.html'">👤<br>Profil</button>
+</nav>
+
+<script src="trainingbackup.js"></script>
+
+</body>
+</html>

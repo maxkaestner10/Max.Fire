@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maximum Fire - Kalender</title>
+
+<link rel="stylesheet" href="stylebackuo.css">
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+<script src="firebase-config.js"></script>
+<script src="auth-helper.js"></script>
+<script src="data-manager.js"></script>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+<h1>Maximum Fire</h1>
+<p>TRAIN SMART AND HARD</p>
+</div>
+
+</header>
+
+<main>
+
+<h2>Kalender</h2>
+
+<div id="timeline"></div>
+
+</main>
+
+<nav>
+
+<button onclick="window.location.href='index.html'">🏠<br>Start</button>
+
+<button class="active">📅<br>Kalender</button>
+
+<button onclick="window.location.href='statistiken.html'">📊<br>Statistik</button>
+<button onclick="window.location.href='profil.html'">👤<br>Profil</button>
+
+</nav>
+
+<script src="sriptbackuo.js"></script>
+
+</body>
+
+<style>
+    /* Styling für die Datumszeile inklusive Sportart */
+    .date {
+        font-size: 13px;
+        font-weight: 600;
+        color: #888888; /* Standardfarbe für Datum & Sportart */
+        margin-bottom: 4px;
+        text-transform: uppercase;
+    }
+
+    /* Der Titel/Name des Trainings darunter */
+    .day strong {
+        font-size: 16px;
+        color: #111111;
+        display: block;
+    }
+</style>
+
+</html>

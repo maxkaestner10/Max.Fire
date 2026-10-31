@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maximum Fire - Personal Records</title>
+
+<link rel="stylesheet" href="stylebackuo.css">
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        <h1>Maximum Fire</h1>
+        <p class="slogan">TRAIN SMART AND HARD</p>
+    </div>
+</header>
+
+<main>
+    <a href="statistiken.html" class="back-button">← Zurück zu Statistiken</a>
+
+    <section class="card">
+        <h2>🏆 Personal Records</h2>
+
+        <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;">
+            
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <label for="timeframeSelect" style="font-weight: bold; font-size: 14px;">Zeitraum:</label>
+                <select id="timeframeSelect" onchange="updatePRData()" style="padding: 10px 14px; border-radius: 10px; border: 1px solid #ccc; background: #fff; font-weight: bold; font-size: 14px; color: #111; cursor: pointer;">
+                    <option value="1d">1 Tag</option>
+                    <option value="7d">7 Tage</option>
+                    <option value="30d">30 Tage</option>
+                    <option value="100d">100 Tage</option>
+                    <option value="1y">1 Jahr</option>
+                    <option value="5y">5 Jahre</option>
+                    <option value="all" selected>Immer</option>
+                </select>
+            </div>
+
+            <div>
+                <label style="font-weight: bold; font-size: 14px; display: block; margin-bottom: 8px;">Metrik:</label>
+                <div class="chart-buttons" style="display: flex; gap: 8px;">
+                    <button id="btnPower" class="chart-btn active" onclick="selectMetric('power')" style="flex: 1; padding: 12px 5px; font-weight: bold;">Leistung</button>
+                    <button id="btnHR" class="chart-btn" onclick="selectMetric('hr')" style="flex: 1; padding: 12px 5px; font-weight: bold;">Herzfrequenz</button>
+                    <button id="btnSpeed" class="chart-btn" onclick="selectMetric('speed')" style="flex: 1; padding: 12px 5px; font-weight: bold;">Speed</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="prList" style="display: flex; flex-direction: column; gap: 10px;">
+        </div>
+
+    </section>
+</main>
+
+<nav>
+    <button onclick="window.location.href='index.html'">🏠<br>Start</button>
+    <button onclick="window.location.href='kalenderbackup.html'">📅<br>Kalender</button>
+    <button class="active" style="border-top: 3px solid #ff7a00;" onclick="window.location.href='statistiken.html'">📊<br>Statistik</button>
+    <button onclick="window.location.href='profile.html'">👤<br>Profil</button>
+</nav>
+
+<script src="stat-pr.js"></script>
+
+</body>
+</html>

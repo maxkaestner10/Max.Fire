@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maximum Fire - Aktivitäten</title>
+
+<link rel="stylesheet" href="stylebackuo.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        <h1>Maximum Fire</h1>
+        <p class="slogan">TRAIN SMART AND HARD</p>
+    </div>
+</header>
+
+<main>
+    <a href="statistiken.html" class="back-button">← Zurück zu Statistiken</a>
+
+    <section class="card">
+        <h2>🚴 Aktivitäten-Verlauf</h2>
+
+        <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;">
+            
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <label for="timeframeSelect" style="font-weight: bold; font-size: 14px;">Zeitraum:</label>
+                    <select id="timeframeSelect" onchange="changeTimeframe()" style="padding: 10px 14px; border-radius: 10px; border: 1px solid #ccc; background: #fff; font-weight: bold; font-size: 14px; cursor: pointer;">
+                        <option value="7d">7 Tage</option>
+                        <option value="1m">1 Monat</option>
+                        <option value="1y">1 Jahr</option>
+                        <option value="10y">10 Jahre</option>
+                        <option value="all">Gesamt</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label style="font-weight: bold; font-size: 14px; display: block; margin-bottom: 8px;">Anzeige:</label>
+                <div class="chart-buttons" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button id="btnDistanz" class="chart-btn active" onclick="selectMetric('distanz')" style="flex: 1; min-width: 90px; padding: 10px 5px; font-weight: bold; font-size: 13px;">Distanz</button>
+                    <button id="btnZeit" class="chart-btn" onclick="selectMetric('zeit')" style="flex: 1; min-width: 90px; padding: 10px 5px; font-weight: bold; font-size: 13px;">Zeit</button>
+                    <button id="btnTSS" class="chart-btn" onclick="selectMetric('tss')" style="flex: 1; min-width: 90px; padding: 10px 5px; font-weight: bold; font-size: 13px;">TSS</button>
+                    <button id="btnAnstieg" class="chart-btn" onclick="selectMetric('anstieg')" style="flex: 1; min-width: 90px; padding: 10px 5px; font-weight: bold; font-size: 13px;">Anstieg</button>
+                    <button id="btnKalorien" class="chart-btn" onclick="selectMetric('kalorien')" style="flex: 1; min-width: 90px; padding: 10px 5px; font-weight: bold; font-size: 13px;">Kalorien</button>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: center; gap: 15px; background: #fdfdfd; padding: 10px; border-radius: 12px; border: 1px solid #eee; margin-top: 5px;">
+                <button onclick="shiftOffset(-1)" style="border: none; background: #ff7a00; color: white; border-radius: 50%; width: 35px; height: 35px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;">◀</button>
+                
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 170px;">
+                    <span id="dateRangeText" style="font-weight: bold; font-size: 15px; text-align: center; color: #111;"></span>
+                    <span id="dateSubText" style="font-size: 12px; color: #888; font-weight: normal; margin-top: 2px; text-align: center;"></span>
+                </div>
+
+                <button id="nextBtn" onclick="shiftOffset(1)" style="border: none; background: #ccc; color: white; border-radius: 50%; width: 35px; height: 35px; font-size: 18px; cursor: not-allowed; display: flex; align-items: center; justify-content: center;" disabled>▶</button>
+            </div>
+
+        </div>
+
+        <div class="chart-wrapper" style="position: relative; height: 300px; width: 100%;">
+            <canvas id="aktivitaetenChart"></canvas>
+        </div>
+
+    </section>
+</main>
+
+<nav>
+    <button onclick="window.location.href='index.html'">🏠<br>Start</button>
+    <button onclick="window.location.href='kalenderbackup.html'">📅<br>Kalender</button>
+    <button class="active" style="border-top: 3px solid #ff7a00;" onclick="window.location.href='statistiken.html'">📊<br>Statistik</button>
+    <button onclick="window.location.href='profil.html'">👤<br>Profil</button>
+</nav>
+
+<script src="stat-aktivitaeten.js"></script>
+
+</body>
+</html>

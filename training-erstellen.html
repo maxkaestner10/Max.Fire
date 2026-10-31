@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Maximum Fire - Training erstellen</title>
+
+<link rel="stylesheet" href="stylebackuo.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+<script src="firebase-config.js"></script>
+<script src="auth-helper.js"></script>
+<script src="data-manager.js"></script>
+
+<style>
+    .form-row {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    /* Bezeichnung und Eingabe nebeneinander */
+    .form-group {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-group label {
+        white-space: nowrap;
+        font-weight: bold;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .form-group input {
+        flex: 1;
+        margin: 0;
+    }
+
+    /* Kompaktes Datum */
+    .date-group {
+        flex: 0 0 auto;
+    }
+
+    .compact-date {
+        width: 130px;
+        padding: 8px 10px;
+        box-sizing: border-box;
+    }
+
+    /* Zeile 1: Name & Trainer */
+    .flex-name {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .flex-trainer {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    /* Zeile 2: Sportart & Beschreibung */
+    .sport-group {
+        flex: 0 0 auto;
+        min-width: 180px;
+    }
+
+    .sport-select-btn {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 10px;
+        background: #ffffff;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        color: #111;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .sport-select-btn:hover {
+        border-color: #ff7a00;
+    }
+
+    .flex-beschreibung {
+        flex: 2;
+        min-width: 220px;
+    }
+
+    /* Modal Popup */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        padding: 15px;
+        box-sizing: border-box;
+    }
+
+    .modal-content {
+        background: #fff;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 320px;
+        padding: 15px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+    }
+
+    .modal-header h3 {
+        margin: 0;
+        font-size: 16px;
+        color: #111;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #888;
+    }
+
+    .sport-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .sport-option-btn {
+        padding: 8px 10px;
+        background: #f8f9fa;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: left;
+        color: #222;
+    }
+
+    .sport-option-btn:hover {
+        background: #ff7a00;
+        color: white;
+        border-color: #ff7a00;
+    }
+
+    @media (max-width: 700px) {
+        .form-row {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+        }
+        .form-group {
+            width: 100%;
+        }
+        .compact-date {
+            width: 100%;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Maximum Fire</h1>
+<p class="slogan">Train smart and hard</p>
+</header>
+
+<main>
+
+<a href="kalenderbackup.html" class="back-button">
+← Zurück zum Kalender
+</a>
+
+<section class="card">
+
+<h2>Training erstellen</h2>
+
+<div class="form-row">
+    <div class="form-group date-group">
+        <label for="trainingDatum">Datum:</label>
+        <input type="date" id="trainingDatum" class="compact-date">
+    </div>
+    <div class="form-group flex-name">
+        <label for="trainingName">Name:</label>
+        <input id="trainingName" placeholder="Name (z. B. Intervall)">
+    </div>
+    <div class="form-group flex-trainer">
+        <label for="trainer">Trainer:</label>
+        <input id="trainer" placeholder="Name (z. B. Max Mustermann)">
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group sport-group">
+        <label>Sportart:</label>
+        <button type="button" id="sportartSelectBtn" onclick="openSportModal()" class="sport-select-btn">
+            <span id="selectedSportText">🚵 MTB</span>
+            <span class="arrow" style="margin-left: 6px; font-size: 10px;">▼</span>
+        </button>
+        <input type="hidden" id="sportart" value="MTB">
+    </div>
+    <div class="form-group flex-beschreibung">
+        <label for="beschreibung">Beschreibung:</label>
+        <input id="beschreibung" placeholder="hab Spaß">
+    </div>
+</div>
+
+<h3>Trainingsbereiche</h3>
+
+<div id="intervals"></div>
+
+<button class="plus" onclick="addInterval()">
++
+</button>
+
+<button class="chart-btn" onclick="saveTraining()" style="margin-top: 15px;">
+💾 Training speichern
+</button>
+
+</section>
+
+<section class="card">
+<h2>Trainingsdiagramm</h2>
+
+<div class="chart-wrapper">
+<canvas id="trainingChart"></canvas>
+</div>
+
+</section>
+
+<section class="card">
+  <h2>Notizen</h2>
+  <div class="form-group" style="width: 100%;">
+      <label for="Notiz">Notiz:</label>
+      <input id="Notiz" placeholder="Notiz hinzufügen">
+  </div>
+</section>
+
+<button class="chart-btn" onclick="saveNote()">
+💾 Notiz speichern
+</button>
+
+</main>
+
+<div id="sportModal" class="modal-overlay" style="display: none;" onclick="closeSportModalOnOutsideClick(event)">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Sportart auswählen</h3>
+            <button type="button" class="close-btn" onclick="closeSportModal()">&times;</button>
+        </div>
+        <div class="sport-grid">
+            <button type="button" class="sport-option-btn" onclick="selectSport('Kraft', '🏋️ Kraft')">🏋️ Kraft</button>
+            <button type="button" class="sport-option-btn" onclick="selectSport('Athletik', '🤸 Athletik')">🤸 Athletik</button>
+            <button type="button" class="sport-option-btn" onclick="selectSport('MTB', '🚵 MTB')">🚵 MTB</button>
+            <button type="button" class="sport-option-btn" onclick="selectSport('Rennrad', '🚴 Rennrad')">🚴 Rennrad</button>
+            <button type="button" class="sport-option-btn" onclick="selectSport('Schwimmen', '🏊 Schwimmen')">🏊 Schwimmen</button>
+            <button type="button" class="sport-option-btn" onclick="selectSport('Wandern', '🥾 Wandern')">🥾 Wandern</button>
+            <button type="button" class="sport-option-btn" onclick="selectSport('Laufen', '🏃 Laufen')">🏃 Laufen</button>
+            <button type="button" class="sport-option-btn" onclick="selectSport('andere', 'andere')">andere</button>
+        </div>
+    </div>
+</div>
+
+<script src="training-erstellen.js"></script>
+
+</body>
+</html>

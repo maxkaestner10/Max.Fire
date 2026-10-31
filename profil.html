@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Fire - Profil</title>
+
+    <link rel="stylesheet" href="stylebackuo.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+    <script src="firebase-config.js"></script>
+    <script src="auth-helper.js"></script>
+    <script src="data-manager.js"></script>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        <h1>Maximum Fire</h1>
+        <p class="slogan">TRAIN SMART AND HARD</p>
+    </div>
+</header>
+
+<main>
+    <h2>👤 Nutzerprofil & Account</h2>
+
+    <section class="card" id="authCard">
+        <p style="color: #666;">Auth-Status wird geladen...</p>
+    </section>
+
+    <section class="card">
+        <h2>📊 Deine Stammdaten</h2>
+        <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+            Diese Werte dienen als Grundlage für deine Zonenberechnungen und Trainingsanalysen.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+            <div>
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Gewicht (kg):</label>
+                <input type="number" id="inputGewicht" placeholder="z. B. 75" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; font-size: 16px;">
+            </div>
+
+            <div>
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Ruhepuls (bpm):</label>
+                <input type="number" id="inputRuhepuls" placeholder="z. B. 45" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; font-size: 16px;">
+            </div>
+
+            <div>
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">FTP - Schwellenleistung (Watt):</label>
+                <input type="number" id="inputFTP" placeholder="z. B. 280" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; font-size: 16px;">
+            </div>
+
+            <div>
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Maximalpuls (bpm):</label>
+                <input type="number" id="inputMaxHR" placeholder="z. B. 190" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; font-size: 16px;">
+            </div>
+
+            <button class="chart-btn" onclick="saveProfileData()" style="margin-top: 10px; background: #ff7a00; color: white; border: none; font-weight: bold; cursor: pointer; padding: 14px; border-radius: 12px; font-size: 16px;">
+                💾 Stammdaten speichern
+            </button>
+        </div>
+    </section>
+</main>
+
+<nav>
+    <button onclick="window.location.href='index.html'">🏠<br>Start</button>
+    <button onclick="window.location.href='kalenderbackup.html'">📅<br>Kalender</button>
+    <button onclick="window.location.href='statistiken.html'">📊<br>Statistik</button>
+    <button class="active" style="border-top: 3px solid #ff7a00; font-weight: bold;">👤<br>Profil</button>
+</nav>
+
+<script src="profil.js"></script>
+
+</body>
+</html>

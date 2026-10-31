@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Maximum Fire</title>
+
+<link rel="stylesheet" href="stylebackuo.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+<script src="firebase-config.js"></script>
+<script src="auth-helper.js"></script>
+<script src="data-manager.js"></script>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+
+<h1>Maximum Fire</h1>
+
+<p>TRAIN SMART AND HARD</p>
+
+</div>
+
+</header>
+
+<main>
+
+<!-- Startseite: Heutiges Training Container -->
+<section class="card" id="todayWorkoutCard">
+    <p style="color: #888; text-align: center;">Heutiges Training wird geladen...</p>
+</section>
+
+<section class="card">
+
+<h2>Übersicht</h2>
+
+<div class="overview">
+
+<div class="box">
+<h3>TSS</h3>
+<p>86</p>
+</div>
+
+
+<div class="box">
+<h3>Ruhepuls</h3>
+<p>45bpm</p>
+</div>
+
+<div class="box">
+<h3>HRV</h3>
+<p>80</p>
+</div>
+
+<div class="box">
+<h3>verbrannte Kalorien</h3>
+<p>1850 kcal</p>
+</div>
+
+</div>
+
+</section>
+
+<section class="card">
+
+<h2>Letzte 7 Tage</h2>
+
+<button onclick="previousWeek()">
+⬅
+</button>
+
+
+<button onclick="nextWeek()">
+⮕
+</button>
+
+<canvas id="weekChart"></canvas>
+
+</section>
+
+</main>
+
+<nav>
+
+<button class="active">🏠<br>Start</button>
+
+<button onclick="window.location.href='kalenderbackup.html'">📅<br>Kalender
+</button>
+
+
+<button onclick="window.location.href='statistiken.html'">📊<br>Statistik</button>
+<button onclick="window.location.href='profil.html'">👤<br>Profil</button>
+
+</nav>
+
+<script src="sriptbackuo.js"></script>
+
+</body>
+
+</html>
+
